@@ -8,7 +8,7 @@ class App < Sinatra::Base
   set :assets_css_compressor, :sass
   set :assets_js_compressor, :uglifier
 
-  Sprockets::Helpers.prefix = "/gunner/assets"
+  Sprockets::Helpers.prefix = "/yaws/assets"
   register Sinatra::AssetPipeline
 
   get '/' do
