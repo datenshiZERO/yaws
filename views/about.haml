@@ -1,0 +1,180 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=Edge,chrome=1", "http-equiv" => "X-UA-Compatible"}/
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
+    %title About | Yet another WWII shoot em up
+    %meta{:content => "Basic game for DevCon/IGDA HTML5 Code Camp", :name => "description"}/
+    %meta{:content => "Yet another WWII shoot em up", :property => "og:title"}/
+    %meta{:content => "Basic game for DevCon/IGDA HTML5 Code Camp", :property => "og:description"}/
+    %meta{:content => "website", :property => "og:type"}/
+    %meta{:content => "http://datenshizero.github.io/yaws/about/", :property => "og:url"}/
+    %meta{:content => image_path("opengraph.png"), :property => "og:image"}/
+    %link{:href => "./favicon.ico", :rel => "shortcut icon"}/
+    %link{:rel => "stylesheet", :href => stylesheet_path('app') } 
+
+    /[if lt IE 9]
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+
+    :css
+      /* Design based on Bootswatch Darkly http://bootswatch.com/darkly/ */
+
+      * {
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+          font-size: 15px;
+          line-height: 1.42857;
+          color: #FFF;
+          background-color: #222;
+      }
+
+      h1, .h1, h2, .h2, h3, .h3 {
+          margin-top: 21px;
+          margin-bottom: 10.5px;
+      }
+
+      h1, .h1 {
+          font-family: "Army Wide", "Georgia", serif;
+          font-weight: normal;
+          font-size: 46px;
+          text-align: center;
+      }
+
+      h2, .h2 {
+          font-size: 32px;
+      }
+
+      h3, .h3 {
+          font-size: 26px;
+      }
+
+      h4, .h4, h5, .h5, h6, .h6 {
+          margin-top: 10.5px;
+          margin-bottom: 10.5px;
+      }
+
+      h4, .h4 {
+          font-size: 19px;
+      }
+
+      p {
+          margin: 0px 0px 10.5px;
+      }
+
+      a:focus {
+          outline: thin dotted;
+          outline-offset: -2px;
+      }
+      a:hover, a:focus {
+          color: #0CE3AC;
+          text-decoration: underline;
+      }
+      a {
+          color: #0CE3AC;
+          text-decoration: none;
+          background: none repeat scroll 0% 0% transparent;
+      }
+
+      .container {
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+      @media (min-width:992px){
+        .container {
+            width: 970px;
+        }
+      }
+
+
+      .footer {
+        margin-top: 50px;
+        font-size: 90%;
+        text-align: center;
+      }
+
+      .fb-share-button > span {
+        vertical-align: baseline !important;
+      }
+
+
+
+  %body
+    - if ENV['RACK_ENV'] == 'production'
+      #fb-root
+    .container.main-container
+      .row
+        .col-lg-12
+          %h1 About Y.A.W.S
+
+          %p 
+            This was the game created in the 
+            %a{ :href => "http://devcon.ph/events/game-development-camp" } DevCon/IGDA HTML5 Game Development Camp
+            last 24 May 2014.
+
+          %p 
+            You can learn how the students made this game via the workshop manual
+            %a{ :href => "https://leanpub.com/html5shootemupinanafternoon" } HTML5 Shoot 'em Up in an Afternoon
+            (well, at least 80% of the game).
+
+          %p
+            %a{:href => "./"} Go back to playing Y.A.W.S.
+      .row
+        .col-lg-12
+          .footer
+            %p.copyright
+              Copyright &copy;2014
+              %a{:href => "http://bryanbibat.net"} Bryan Bibat
+            %p.powered
+              Made with <a href="http://phaser.io">Phaser</a> and
+              <a href="http://www.widgetworx.com/spritelib/">SpriteLib</a> and
+              <a href="http://opengameart.org/users/dklon">dklon's sound effects</a>
+
+            - if ENV['RACK_ENV'] == 'production'
+              %p
+                .g-plusone{"data-size" => "medium", "data-href" => "http://datenshizero.github.com/yaws/"}
+                %a.twitter-share-button{"data-text" => "Play Y.A.W.S., Yet Another WWII Shoot 'em up in HTML5!", "href" => "https://twitter.com/share", "data-via" => "bry_bibat", "data-url" => "http://datenshizero.github.com/yaws/"} Tweet
+                .fb-share-button{"data-type" => "button_count", "data-href" => "http://datenshizero.github.com/yaws/"}
+            %p 
+              %a{ href: "https://github.com/datenshiZERO/yaws" } Fork this on Github
+ 
+ 
+
+    - if ENV['RACK_ENV'] == 'production'
+      / Piwik
+      :javascript
+        var _paq = _paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+          var u=(("https:" == document.location.protocol) ? "https" : "http") + "://analytics.bryanbibat.net/";
+          _paq.push(['setTrackerUrl', u+'piwik.php']);
+          _paq.push(['setSiteId', 12]);
+          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+          g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+        })();
+      %noscript
+        %p
+          %img{:alt => "", :src => "http://analytics.bryanbibat.net/piwik.php?idsite=12", :style => "border:0;"}/
+      / End Piwik Code
+      :javascript
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+      :javascript
+        (function() {
+          var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/platform.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+      :javascript
+        (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
