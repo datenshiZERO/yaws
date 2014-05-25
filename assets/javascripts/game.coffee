@@ -104,14 +104,22 @@ class BasicGame.Game
       return
 
     @lives = @add.group()
+    @bombs = @add.group()
     
     for i in [0..2]
       life = @lives.create(924 + (30 * i), 30, "player")
       life.scale.setTo 0.5, 0.5
       life.anchor.setTo 0.5, 0.5
+      bomb = @bombs.create(96 - (30 * i), 30, "bomb")
+      bomb.anchor.setTo 0.5, 0.5
+      bomb.inputEnabled = true
+      bomb.events.onInputDown.add(@startBomb, this)
 
     @cursors = @input.keyboard.createCursorKeys()
-    @instructions = @add.text(510, 600, "Use Arrow Keys to Move, Press Z to Fire\n" + "Tapping/clicking does both",
+    @instructions = @add.text(510, 570,
+      "Use Arrow Keys to Move, Press Z to Fire\n" +
+      "Tapping/clicking does both\n\n" +
+      "Press X or click the top right icons to trigger Bomb",
       font: "20px monospace"
       fill: "#fff"
       align: "center"
@@ -126,6 +134,12 @@ class BasicGame.Game
     )
     @scoreText.anchor.setTo 0.5, 0.5
 
+    @bombBlast = @add.sprite(0, 0, 'bombBlast')
+    @bombBlast.animations.add 'blast', [0, 1], 10, true
+    @physics.enable(@bombBlast, Phaser.Physics.ARCADE)
+    @bombBlast.kill()
+    @blastUntil = null
+
     @enemyDeathSFX = @add.audio('enemyDeath')
     @enemyFireSFX = @add.audio('enemyFire')
     @playerDeathSFX = @add.audio('playerDeath')
@@ -138,11 +152,13 @@ class BasicGame.Game
     
     for i in [0, 1]
       @physics.arcade.overlap @bullets, @enemies[i], @enemyHit, null, this
+      @physics.arcade.overlap @bombBlast, @enemies[i], @bombHit, null, this
       @physics.arcade.overlap @player, @enemies[i], @playerHit, null, this
       @physics.arcade.overlap @player, @powerUps[i], @playerPowerUp, null, this
       
     @physics.arcade.overlap @bullets, @enemies[2], @enemyHit, null, this  if @boss and @boss.form > 1
     @physics.arcade.overlap @player, @enemyBullets, @playerHit, null, this
+    @physics.arcade.overlap @bombBlast, @enemyBullets, @bombHit, null, this
     @checkWave()
     @changeBossBehavior()  if @boss
     @spawnEnemies()
@@ -158,6 +174,7 @@ class BasicGame.Game
         fill: "#fff"
       ).anchor.setTo(0.5, 0.5)
       @showReturn = null
+    @bombBlast.kill() if @blastUntil and @blastUntil < @time.now
     return
 
   checkWave: ->
@@ -300,6 +317,7 @@ class BasicGame.Game
         @quitGame()
       else
         @fire()
+    @startBomb() if @input.keyboard.isDown(Phaser.Keyboard.X)
     return
 
   fire: ->
@@ -339,6 +357,12 @@ class BasicGame.Game
         bullet.reset @player.x + (3 + i * 5), @player.y - 20
         bullet.body.velocity.y = -500
 
+  startBomb: ->
+    return if @bombs.countLiving() is 0 or @bombBlast.alive
+    @bombBlast.reset 0, 0
+    @bombBlast.play 'blast'
+    @bombs.getFirstAlive().kill()
+    @blastUntil = @time.now + 3000
 
   enemyHit: (bullet, enemy) ->
     bullet.kill()
@@ -352,7 +376,7 @@ class BasicGame.Game
     life = @lives.getFirstAlive()
     if life
       life.kill()
-      @ghostUntil = @time.now + 3000
+      @ghostUntil = @time.now + 2000
       @player.play "ghost"
       @weaponPower = 0
       @weaponType = 0
@@ -361,6 +385,9 @@ class BasicGame.Game
       player.kill()
       @displayEnd false
     return
+
+  bombHit: (bomb, enemy) ->
+    @damageEnemy enemy, 10
 
   playerPowerUp: (player, powerUp) ->
     @pickupSFX.play()
@@ -379,8 +406,9 @@ class BasicGame.Game
     if enemy.alive
       enemy.play "hit"
     else
-      @explode enemy
-      @enemyDeathSFX.play()
+      unless enemy.key is 'enemyBullet'
+        @explode enemy
+        @enemyDeathSFX.play()
       if enemy.key is "greenEnemy"
         @score += 100
         @killCount[0]++
