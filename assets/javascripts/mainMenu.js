@@ -16,14 +16,21 @@ BasicGame.MainMenu.prototype = {
 
     this.add.sprite(0, 0, 'titlepage');
 
-    this.loadingText = this.add.text(510, 520, "Press Z or tap/click game to start\nPress Q to open About page", { font: "24px monospace", fill: "#fff" , align: "center"});
+    this.loadingText = this.add.text(510, 520, "Press Z or tap/click game to start", { font: "24px monospace", fill: "#fff" , align: "center"});
     this.loadingText.anchor.setTo(0.5, 0.5);
+    this.aboutText = this.add.text(510, 590, "Press Q or tap/click this blurb to share\nor learn more about this game\n(including how to make it)", { font: "18px monospace", fill: "#fff" , align: "center"});
+    this.aboutText.anchor.setTo(0.5, 0.5);
+    this.aboutText.inputEnabled = true;
+    this.aboutText.events.onInputDown.add(function() {
+      this.disableGame = true;
+      window.location = "./about.html";
+    }, this);
     this.add.text(510, 680, "image assets Copyright (c) 2002 Ari Feldman\nsound assets Copyright (c) 2012 dklon", { font: "16px monospace", fill: "#fff", align: "center"}).anchor.setTo(0.5, 0.5);
 
   },
 
   update: function () {
-    if (this.input.keyboard.isDown(Phaser.Keyboard.Z) || this.input.activePointer.isDown) {
+    if (!this.disableGame && (this.input.keyboard.isDown(Phaser.Keyboard.Z) || this.input.activePointer.isDown)) {
       this.startGame();
     }
     if (this.input.keyboard.isDown(Phaser.Keyboard.Q)) {

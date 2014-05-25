@@ -141,7 +141,7 @@ class BasicGame.Game
       @physics.arcade.overlap @player, @enemies[i], @playerHit, null, this
       @physics.arcade.overlap @player, @powerUps[i], @playerPowerUp, null, this
       
-    @physics.arcade.overlap @bullets, @enemies[2], @enemyHit, null, this  if @boss and @boss.form is 2
+    @physics.arcade.overlap @bullets, @enemies[2], @enemyHit, null, this  if @boss and @boss.form > 1
     @physics.arcade.overlap @player, @enemyBullets, @playerHit, null, this
     @checkWave()
     @changeBossBehavior()  if @boss
@@ -170,10 +170,10 @@ class BasicGame.Game
     else if @wave is 3 and @score >= 10000
       @wave = 4
       @spawnRate = [500, 1500]
-    else if @wave is 4 and @score >= 15000
+    else if @wave is 4 and @score >= 17500
       @wave = 5
-      @spawnRate = [200, 1200]
-    else if @wave is 5 and @score >= 20000
+      @spawnRate = [200, 1000]
+    else if @wave is 5 and @score >= 25000
       @wave = 6
       @spawnRate = [750, null]
       @spawnBoss()
@@ -206,16 +206,22 @@ class BasicGame.Game
         enemy.nextFire = @time.now + 1900
       return
     ), this
-    if @boss and @boss.alive and @boss.form is 2 and @time.now > @boss.nextFire
+    if @boss and @boss.alive and @boss.form > 1 and @time.now > @boss.nextFire
       @enemyFireSFX.play()
       switch
         when @boss.health > 750
+          if @boss.form is 2
+            @boss.body.velocity.x *= 0.9
+            @boss.form = 3
           @spawnEnemyBullet @boss.x - 20, @boss.y + 20
           @spawnEnemyBullet @boss.x + 20, @boss.y + 20
           @spawnEnemyBullet @boss.x - 40, @boss.y + 20
           @spawnEnemyBullet @boss.x + 40, @boss.y + 20
           @boss.nextFire = @time.now + 1000
         when @boss.health > 500
+          if @boss.form is 3
+            @boss.body.velocity.x *= 0.8
+            @boss.form = 4
           @spawnEnemyBullet @boss.x - 20, @boss.y + 20
           @spawnEnemyBullet @boss.x + 20, @boss.y + 20
           @spawnEnemyBullet @boss.x - 30, @boss.y + 20
@@ -224,6 +230,9 @@ class BasicGame.Game
           @spawnEnemyBullet @boss.x + 40, @boss.y + 20
           @boss.nextFire = @time.now + 700
         when @boss.health > 250
+          if @boss.form is 4
+            @boss.body.velocity.x *= 0.7
+            @boss.form = 5
           @spawnEnemyBullet @boss.x - 20, @boss.y + 20
           @spawnEnemyBullet @boss.x + 20, @boss.y + 20
           @spawnEnemyBulletToXY @boss.x - 30, @boss.y + 20, @player.x - 100, @player.y
